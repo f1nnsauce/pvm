@@ -171,9 +171,11 @@ class CPU:
         self.__flags = {
             "TRUE": False
         }
+        self.__window_key_press_functions = {}
         ssd_path = os.path.expanduser("~/.pvm/storage")
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
         self.__ssd = SSD(ssd_path)
+        self.__pending_key_calls = []
         self.__memid = ""
 
     def fetch(self):
@@ -189,6 +191,12 @@ class CPU:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.__graphics_running = False
+                elif event.type == pygame.KEYDOWN:
+                    keycode = event.key
+                    if keycode in self.__window_key_press_functions:
+                        self.__pending_key_calls.append(
+                            self.__window_key_press_functions[keycode]
+                        )
             pygame.display.flip()
             clock.tick(60)
         pygame.quit()
@@ -249,6 +257,13 @@ class CPU:
         elif op == "MEMID":
             memid = instruction[1]
             self.__memid = memid
+        elif op == "BINDKEY":
+            if self.__graphics_running == False:
+                print("You cannot bind a key without a graphical window!")
+                raise Exception
+            func_name, key = instruction[1], instruction[2]
+            keycode = pygame.key.key_code(key)
+            self.__window_key_press_functions[keycode] = func_name
         elif op == "GETMEM":
             reg, key = instruction[1], instruction[2]
             self.__registers[reg] = self.__ssd.return_data(self.__memid, key)
@@ -392,8 +407,8 @@ class CPU:
             self.__registers[reg] += 1
         elif op == "GRA":
             w,h = int(instruction[1]),int(instruction[2])
-            thread = threading.Thread(target=self.start_window, args=(h,w))
-            thread.start()
+            self.__window_thread = threading.Thread(target=self.start_window, args=(h,w))
+            self.__window_thread.start()
             while not self.__graphics_screen:
                 time.sleep(0.01)
         elif op == "DEC":
@@ -436,8 +451,11 @@ class CPU:
                 end = self.__registers[end]
             self.__registers[reg] = self.__registers[reg][start:end]
         elif op == "HLT":
-            pygame.quit()
+            self.__graphics_running = False
             self.__running = False
+            if self.__window_thread:
+                self.__window_thread.join()
+            sys.exit(0)
         else:
             print("UNRECOGNIZED COMMAND ERROR")
             self.__running = False
@@ -447,9 +465,11 @@ class CPU:
         return self.__pc
 
     def run(self):
-        self.__pc = 0
         self.__running = True
         while self.__running:
+            if len(self.__pending_key_calls) != 0:
+                fn = self.__pending_key_calls.pop(0)
+                self.execute(("CALL", fn))
             inst = self.fetch()
             if isinstance(inst, int):
                 break

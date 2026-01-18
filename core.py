@@ -40,9 +40,8 @@ class SSD:
 
         self.curr_size = os.path.getsize(file)
         if self.curr_size > size:
-            with open(file, "r+") as f:
-                f.truncate(0)
-                f.seek(0)
+            print("You are out of storage!")
+            sys.exit(0)
 
         self.filename = file
         self.size = size

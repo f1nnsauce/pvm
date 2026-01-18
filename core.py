@@ -32,6 +32,7 @@ if not path.is_file():
 filename = str(path)
 
 pygame.init()
+pygame.mixer.init()
 
 class SSD:
     def __init__(self, file="mem", size=1073741824):
@@ -171,6 +172,7 @@ class CPU:
         self.__flags = {
             "TRUE": False
         }
+        self.__sounds_playing = {}
         self.__window_key_press_functions = {}
         ssd_path = os.path.expanduser("~/.pvm/storage")
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
@@ -243,6 +245,45 @@ class CPU:
         elif op == "TM":
             reg = instruction[1]
             self.__registers[reg] = time.time()
+        elif op == "LOADSOUND":
+            sound, name = instruction[1], instruction[2]
+            if not self.__graphics_running:
+                print("Cannot load sounds without a graphical window!")
+                raise Exception
+            soundclass = pygame.mixer.Sound(sound)
+            self.__sounds_playing[name] = soundclass
+        elif op == "PLAYSOUND":
+            sound, name, islooped = instruction[1], instruction[2], instruction[3]
+            if not self.__graphics_running:
+                print("Can't play sounds without a graphical window!")
+                raise Exception
+            if not name in self.__sounds_playing:
+                print(f"The sound {name} is not loaded!")
+                raise Exception
+            soundclass = self.__sounds_playing[name]
+            loops = -1 if islooped == "TRUE" else 0
+            soundclass.play(loops=loops)
+        elif op == "STOPSOUND":
+            name = instruction[1]
+            if not self.__graphics_running:
+                print("There isn't any graphical window running to play sounds from!")
+                raise Exception
+            if not name in self.__sounds_playing:
+                print(f"The sound {name} isn't loaded!")
+                raise Exception
+            self.__sounds_playing[name].stop()
+        elif op == "REMSOUND":
+            name = instruction[1]
+            if not self.__graphics_running:
+                print("There's no graphical window to remove sounds from.")
+                raise Exception
+            if not name in self.__sounds_playing:
+                print("This sound isn't even loaded!")
+                raise Exception
+            self.__sounds_playing[name] = None
+        elif op == "LSSOUND":
+            reg = instruction[1]
+            self.__registers[reg] = len(self.__sounds_playing)
         elif op == "IN":
             reg,q = instruction[1], ' '.join(instruction[2:]).strip('"')
             self.__registers[reg] = input(q)

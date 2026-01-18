@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys
+import sys, os
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -10,7 +10,6 @@ LOADER_VERSION = BASE_DIR / "pvm-version-loader.txt"
 
 VERSION_URL = "https://raw.githubusercontent.com/f1nnsauce/pvm/refs/heads/main/version.txt"
 CORE_URL = "https://raw.githubusercontent.com/f1nnsauce/pvm/refs/heads/main/core.py"
-LOADER_VERSION_URL = "https://raw.githubusercontent.com/f1nnsauce/pvm/refs/heads/main/loader_ver.txt"
 
 BASE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -47,5 +46,18 @@ elif arg == "--update":
     sys.exit(0)
 
 #updating the loader is the minimal file's job
+elif arg == "--update-loader":
+    if LOADER_VERSION.read_text() == fetch(LOADER_VERSION_URL) and not arg2 and not arg2 == "--bypass-v-check":
+        print("Your PVM loader is up to date.")
+        sys.exit(0)
+    os.execv(
+        sys.executable,
+        [
+            sys.executable,
+            str(Path("/usr/local/bin/pvm")),
+            "update"
+        ]
+    )
+
 
 exec(CORE.read_text(), {"__name__": "__main__"})

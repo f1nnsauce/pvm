@@ -10,6 +10,7 @@ LOADER_VERSION = BASE_DIR / "pvm-version-loader.txt"
 
 VERSION_URL = "https://raw.githubusercontent.com/f1nnsauce/pvm/refs/heads/main/version.txt"
 CORE_URL = "https://raw.githubusercontent.com/f1nnsauce/pvm/refs/heads/main/core.py"
+LOADER_VERSION_URL = "https://raw.githubusercontent.com/f1nnsauce/pvm/refs/heads/main/pvm-version-loader.txt"
 
 BASE_DIR.mkdir(parents=True, exist_ok=True)
 

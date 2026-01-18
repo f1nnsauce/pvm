@@ -12,6 +12,7 @@ real_stderr = sys.stderr
 sys.stderr = _DevNull()
 
 import pygame
+
 sys.stderr = real_stderr
 warnings.filterwarnings("ignore")
 if len(sys.argv) != 2:

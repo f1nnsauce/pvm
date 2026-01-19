@@ -165,6 +165,7 @@ class CPU:
         self.__loop_max = 9999
         self.__graphics_screen = None
         self.__graphics_running = False
+        self.__window_thread = None
         self.__colors = {
             "RED": pygame.Color(255,0,0),
             "GREEN": pygame.Color(0,255,0),

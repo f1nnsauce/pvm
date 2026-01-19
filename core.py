@@ -15,9 +15,16 @@ import pygame
 
 sys.stderr = real_stderr
 warnings.filterwarnings("ignore")
-if len(sys.argv) != 2:
-    print("usage: pvm <file>.pvm")
+if len(sys.argv) < 2:
+    print("usage: pvm <file>.pvm (OPTIONAL FLAG)")
     sys.exit(1)
+
+mem_size = None
+regs = None
+if "--regs" in sys.argv:
+    regs = int(sys.argv.index("--regs") + 1)
+if "--mem-size" in sys.argv:
+    mem_size = int(sys.argv.index("--mem-size") + 1)
 
 path = Path(sys.argv[1])
 
@@ -520,7 +527,7 @@ class CPU:
             inst = inst.split()
             self.execute(inst)
 
-cpu = CPU()
+cpu = CPU(mem_size=mem_size if mem_size else 256, regs=regs if regs else 200)
 with open(filename, "r") as f:
     content = f.readlines()
 cpu.load_program(content)

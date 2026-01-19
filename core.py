@@ -490,6 +490,9 @@ class CPU:
                 print(f"ERROR ON TOFLOAT AT PC {self.__pc}")
                 self.__running = False
                 raise Exception
+        elif op == "REGDUMP":
+            for k, v in self.__registers.items():
+                print(f"{k}: {v}")
         elif op == "CUT":
             reg = instruction[1]
             start, end = instruction[2], instruction[3]

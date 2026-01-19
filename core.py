@@ -536,4 +536,4 @@ try:
 except KeyboardInterrupt:
     pass
 except Exception:
-    print(f"An error has occured on program-line {cpu.get_pc()-1}")
+    print(f"An error has occured on line {cpu.get_pc()-1}")

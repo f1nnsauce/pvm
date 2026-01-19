@@ -28,7 +28,7 @@ if len(sys.argv) == 3:
     arg2 = sys.argv[2]
 
 if arg == "--help":
-    print(f"pvm v.{VERSION.read_text().strip()}\n\nuse 'pvm file_path.pvm' to execute a file.")
+    print("Use 'pvm file_path.pvm' to execute a file.")
     sys.exit(0)
 
 elif arg == "--version":

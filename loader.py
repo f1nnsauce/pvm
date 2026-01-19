@@ -28,7 +28,7 @@ if len(sys.argv) == 3:
     arg2 = sys.argv[2]
 
 if arg == "--help":
-    print("Use 'pvm file_path.pvm' to execute a file.")
+    print("Use 'pvm file_path.pvm' to execute a file.\n\n--update: updates the core\n--update-loader: updates the loader\n--mem-size: run a program with a custom amount of memory (default 256)\n--regs: run a program with a custom amount of registers (default 200)\n--bypass-v-check: bypass the version check for updates")
     sys.exit(0)
 
 elif arg == "--version":

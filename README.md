@@ -1,6 +1,6 @@
 # PVM
 
-PVM is a turing complete esoteric interpreted programming language similar to Assembly implemented in Python. It's a hobby project in active development.
+PVM is a Turing-complete esoteric interpreted programming language similar to Assembly implemented in Python. It's a hobby project in active development.
 <br>
 Below is an example of PVM's usage.
 
@@ -24,7 +24,7 @@ Yes, you can literally make anything in this language with enough time and dedic
 I explicitly designed the syntax to be understandable.
 
 ### Great Way To Be Creative
-You know what they say, limitations make creativity. While this language is turing complete, it doesn't have that many built-in features, which leads users to reinvent the function they would've otherwise taken for granted.
+You know what they say, limitations make creativity. While this language is Turing-complete, it doesn't have that many built-in features, which leads users to reinvent the function they would've otherwise taken for granted.
 
 ---
 

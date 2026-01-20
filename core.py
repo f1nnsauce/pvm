@@ -112,6 +112,41 @@ class SSD:
 
         return None
 
+    def delete_key(self, section_name, data_title):
+        target = f"[{section_name}]"
+        key = f"{data_title}="
+
+        with open(self.filename, "r") as f:
+            lines = f.readlines()
+
+        new_lines = []
+        in_section = False
+        deleted = False
+
+        for line in lines:
+            stripped = line.strip()
+
+            if stripped == target:
+                in_section = True
+                new_lines.append(line)
+                continue
+
+            if in_section and stripped.startswith("[") and stripped.endswith("]"):
+                in_section = False
+
+            if in_section and stripped.startswith(key):
+                deleted = True
+                continue  # skip this key
+
+            self._cleanup_excess_newlines(new_lines, line)
+
+        if deleted:
+            with open(self.filename, "w") as f:
+                f.writelines(new_lines)
+
+        return deleted
+
+
     def _cleanup_excess_newlines(self, lines, current):
         if current.strip() == "" and lines and lines[-1].strip() == "":
             return
@@ -322,6 +357,9 @@ class CPU:
         elif op == "DELSAVE":
             key = instruction[1]
             self.__ssd.wipe_section(self.__memid)
+        elif op == "DELMEM":
+            key = instruction[1]
+            self.ssd.delete_key(self.__memid, key)
         elif op == "ADDMEM":
             data_title, data = instruction[1], instruction[2]
             if instruction[2].startswith('"') and instruction[-1].endswith('"'):

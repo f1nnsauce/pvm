@@ -1,6 +1,6 @@
 # PVM
 
-PVM is a turing complete esoteric programming language similar to Assembly coded in Python. It's just a fun project I made in a few days, but there will be regular updates.
+PVM is a turing complete esoteric programming language similar to Assembly implemented in Python. It's just a fun project I made in a few days, but there will be regular updates.
 <br>
 Below is an example of PVM's usage.
 
@@ -15,6 +15,6 @@ You can simply use an AUR helper to install pvm-git with commands like `yay -S p
 
 ---
 
-## ❗❗ WARNING
+## ❗❗ WARNING ❗❗
 
-PVM-GIT is currently only on the AUR. However, I'll try to get it to as many distros as possible.
+PVM-GIT is currently only on the AUR. However, I'll try to get it to as many distros as possible. These source files are the files that the PVM bootstrapper uses, the PVM bootstrapper source is currently not available for viewing, but I plan to add it to GitHub too.

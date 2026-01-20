@@ -13,6 +13,12 @@ Below is an example of PVM's usage.
 ### Arch Linux or Arch-Based Linux Distributions
 You can simply use an AUR helper to install pvm-git with commands like `yay -S pvm-git` or `paru -S pvm-git`.
 
+### Other Linux distributions or MacOS
+Download /installers/general-unix-installer.py, use `chmod +x /PATH/TO/INSTALLER.py` and run it as sudo.
+
+### Windows
+Download /installers/windows-installer.py, and run it through the command line using `python /PATH/TO/INSTALLER.py`.
+
 ---
 
 ## Features
@@ -108,9 +114,3 @@ LOAD REG1 "Hello, world!"
 OUT REG1
 HLT
 ```
-
----
-
-## ❗❗ WARNING ❗❗
-
-PVM-GIT is currently only on the AUR. However, I'll try to get it to as many distros as possible. These source files are the files that the PVM bootstrapper uses, the PVM bootstrapper source is currently not available for viewing, but I plan to add it to GitHub too.

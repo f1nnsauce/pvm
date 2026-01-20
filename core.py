@@ -250,6 +250,9 @@ class CPU:
         elif op == "MULT":
             reg1,reg2 = instruction[1], instruction[2]
             self.__registers[reg1] *= self.__registers[reg2]
+        elif op == "DIV":
+            reg1,reg2 = instruction[1], instruction[2]
+            self.__registers[reg1] /= self.__registers[reg2]
         elif op == "TM":
             reg = instruction[1]
             self.__registers[reg] = time.time()

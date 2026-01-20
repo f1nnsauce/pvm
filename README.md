@@ -1,8 +1,8 @@
 # PVM
 
-PVM is a turing complete esoteric programming language similar to Assembly. It's just a fun project I made in a few days, but there will be regular updates.
+PVM is a turing complete esoteric programming language similar to Assembly coded in Python. It's just a fun project I made in a few days, but there will be regular updates.
 <br>
-Below is an example of pvm's usage.
+Below is an example of PVM's usage.
 
 ![Image couldn't load](./images/example.png)
 

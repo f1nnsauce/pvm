@@ -334,7 +334,7 @@ class CPU:
             delay = float(instruction[1])
             time.sleep(delay)
         elif op == "RECT":
-            l, t, w, h, c = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
+            l, t, w, h, c = instruction[2], instruction[1], instruction[3], instruction[4], instruction[5]
             if l.startswith("REG"):
                 l = self.__registers[l]
             if t.startswith("REG"):

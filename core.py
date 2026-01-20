@@ -362,14 +362,14 @@ class CPU:
             c = self.__colors[c]
             pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
         elif op == "PIX":
-            t, l = instruction[2], instruction[3]
+            c, t, l = instruction[1], instruction[2], instruction[3]
             if t.startswith("REG"):
                 t = self.__registers[t]
             if l.startswith("REG"):
                 l = self.__registers[l]
             l = int(l)
             t = int(t)
-            pygame.draw.circle(self.__graphics_screen, self.__colors[instruction[1]], (l,t), 2)
+            pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
         elif op == "CMP":
             reg1,oper,reg2 = instruction[1],instruction[2],instruction[3]
             reg1 = self.__registers[reg1]

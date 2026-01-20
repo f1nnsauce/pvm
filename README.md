@@ -1,6 +1,6 @@
 # PVM
 
-PVM is a turing complete esoteric programming language similar to Assembly implemented in Python. It's just a fun project I made in a few days, but there will be regular updates.
+PVM is a turing complete esoteric interpreted programming language similar to Assembly implemented in Python. It's a hobby project in active development.
 <br>
 Below is an example of PVM's usage.
 
@@ -12,6 +12,31 @@ Below is an example of PVM's usage.
 
 ### Arch Linux or Arch-Based Linux Distributions
 You can simply use an AUR helper to install pvm-git with commands like `yay -S pvm-git` or `paru -S pvm-git`.
+
+---
+
+## Features
+
+### Turing Complete
+Yes, you can literally make anything in this language with enough time and dedication.
+
+### Easy To Understand
+I explicitly designed the syntax to be as understandable as possible.
+
+### Great Way To Be Creative
+You know what they say, limitations make creativity. While this language is turing complete, it doesn't have that many built-in features, which leads users to reinvent the function they would've otherwise taken for granted.
+
+---
+
+## Example Snippet
+
+Here's a small snippet of a "Hello, world!" program in PVM.
+
+```
+LOAD REG1 "Hello, world!"
+OUT REG1
+HLT
+```
 
 ---
 

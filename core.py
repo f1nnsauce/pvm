@@ -209,7 +209,8 @@ class CPU:
             "BROWN": pygame.Color(125,60,0),
             "MAGENTA": pygame.Color(255,0,255),
             "WHITE": pygame.Color(255,255,255),
-            "BLACK": pygame.Color(0,0,0)
+            "BLACK": pygame.Color(0,0,0),
+            "GRAY": pygame.Color(155,155,155)
         }
         self.__flags = {
             "TRUE": False

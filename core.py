@@ -540,6 +540,15 @@ class CPU:
                 time.sleep(0.01)
         elif op == "BINDCLICK":
             t, l, w, h, func_name = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
+            if t.startswith("REG"):
+                t=self.__registers[t]
+            if l.startswith("REG"):
+                l=self.__registers[l]
+            if w.startswith("REG"):
+                w=self.__registers[w]
+            if h.startswith("REG"):
+                h=self.__registers[h]
+            
             self.__window_click_areas.append(
                 (t,l,w,h,func_name)
             )

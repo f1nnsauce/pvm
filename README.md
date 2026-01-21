@@ -104,6 +104,7 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - RANDI [REGISTER] [MIN] [MAX]: Sets the value of a register to a random integer between MIN and MAX.
 - HLT: Terminates the program. Any graphical windows will be destroyed. Registers will be reset but anything saved to storage via the MEM commands will stay.
 - BINDKEY [FUNCTION NAME] [KEY]: Binds a key press to a function. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- BINDKEYREL [FUNCTION NAME] [KEY]: Binds a key release to a function. MUST HAVE A GRAPHICAL WINDOW OPEN.
 
 ### Example Snippet
 

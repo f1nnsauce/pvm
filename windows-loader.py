@@ -21,7 +21,7 @@ def fetch(url: str) -> str:
 
 # Argument parsing
 if len(sys.argv) == 1:
-    print("Expected argument. Use --help for usage information.")
+    print("expected argument")
     sys.exit(0)
 
 arg = sys.argv[1]

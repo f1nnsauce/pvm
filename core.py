@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import time, random, threading, os, sys, warnings
+import time, random, threading, os, sys
 from pathlib import Path
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["PYGAME_DETECT_AVX2"] = "1"
@@ -14,7 +14,6 @@ sys.stderr = _DevNull()
 import pygame
 
 sys.stderr = real_stderr
-warnings.filterwarnings("ignore")
 if len(sys.argv) < 2:
     print("usage: pvm <file>.pvm (OPTIONAL FLAG)")
     sys.exit(1)

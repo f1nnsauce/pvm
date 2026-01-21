@@ -14,10 +14,10 @@ Below is an example of PVM's usage.
 You can simply use an AUR helper to install pvm-git with commands like `yay -S pvm-git` or `paru -S pvm-git`.
 
 ### Other Linux distributions or MacOS
-Download /installers/general-unix-installer.py, use `chmod +x /PATH/TO/INSTALLER.py` and run it as sudo. The reason for the root privileges are because the installer adds a file to `/usr/local/bin/pvm`.
+Download [./installers/general-unix-installer.py](/installers/general-unix-installer.py), use `chmod +x /PATH/TO/INSTALLER.py` and run it as sudo. The reason for the root privileges are because the installer adds a file to `/usr/local/bin/pvm`.
 
 ### Windows
-Download /installers/windows-installer.py, make sure you have Python 3.x installed and in your PATH, and run it through the command line using `python /PATH/TO/INSTALLER.py`.
+Download [/installers/windows-installer.py](/installers/windows-installer.py), make sure you have Python 3.x installed and in your PATH, and run it through the command line using `python /PATH/TO/INSTALLER.py`.
 
 ---
 

@@ -107,6 +107,8 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - HLT: Terminates the program. Any graphical windows will be destroyed. Registers will be reset but anything saved to storage via the MEM commands will stay.
 - BINDKEY [FUNCTION NAME] [KEY]: Binds a key press to a function. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - BINDKEYREL [FUNCTION NAME] [KEY]: Binds a key release to a function. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- BINDCLICK [TOP] [LEFT] [WIDTH] [HEIGHT] [FUNCTION NAME]: Binds a function to a click in a specific region.
+- CLOCK [FPS]: Calculates the delta for a static FPS and delays execution for that amount of time.
 
 ### Example Snippet
 

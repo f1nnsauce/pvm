@@ -216,13 +216,15 @@ class CPU:
         self.__flags = {
             "TRUE": False
         }
+        self.__window_click_areas = []
         self.__sounds_playing = {}
         self.__window_key_press_functions = {}
         self.__window_key_rel_functions = {}
+        self.__call_stack = []
         ssd_path = os.path.expanduser("~/.pvm/storage")
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
         self.__ssd = SSD(ssd_path)
-        self.__pending_key_calls = []
+        self.__pending_graphical_calls = []
         self.__memid = ""
 
     def fetch(self):
@@ -242,15 +244,29 @@ class CPU:
                 elif event.type == pygame.KEYDOWN:
                     keycode = event.key
                     if keycode in self.__window_key_press_functions:
-                        self.__pending_key_calls.append(
+                        self.__pending_graphical_calls.append(
                             self.__window_key_press_functions[keycode]
                         )
                 elif event.type == pygame.KEYUP:
                     keycode = event.key
                     if keycode in self.__window_key_rel_functions:
-                        self.__pending_key_calls.append(
+                        self.__pending_graphical_calls.append(
                             self.__window_key_rel_functions[keycode]
                         )
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    for i in range(len(self.__window_click_areas)):
+                        indx = self.__window_click_areas[i]
+                        t,l,w,h,f = indx[0], indx[1], indx[2], indx[3], indx[4]
+                        t=int(t)
+                        l=int(l)
+                        w=int(w)
+                        h=int(h)
+                        rect = pygame.Rect(l,t,w,h)
+                        if rect.collidepoint(pygame.mouse.get_pos()):
+                            self.__pending_graphical_calls.append(f)
+                            del rect
+                            continue
+
             pygame.display.flip()
             clock.tick(60)
         pygame.quit()
@@ -376,7 +392,7 @@ class CPU:
             self.__ssd.wipe_section(self.__memid)
         elif op == "DELMEM":
             key = instruction[1]
-            self.ssd.delete_key(self.__memid, key)
+            self.__ssd.delete_key(self.__memid, key)
         elif op == "ADDMEM":
             data_title, data = instruction[1], instruction[2]
             if instruction[2].startswith('"') and instruction[-1].endswith('"'):
@@ -478,6 +494,10 @@ class CPU:
                 if self.__flags["TRUE"] == True:
                     cmd = ' '.join(instruction[2:])
                     self.execute(cmd.strip().split())
+        elif op == "CLOCK":
+            t = instruction[1]
+            d = 1 / int(t)
+            time.sleep(d)
         elif op == "SWP":
             reg1, reg2 = instruction[1], instruction[2]
             self.__registers[reg1], self.__registers[reg2] = self.__registers[reg2], self.__registers[reg1]
@@ -492,7 +512,7 @@ class CPU:
         elif op == "CALL":
             name = instruction[1]
             if name in self.__function_idxs:
-                self.__last_stop_line = self.__pc
+                self.__call_stack.append(self.__pc)
                 self.__pc = self.__function_idxs[name]
         elif op.startswith("LOOP"):
             looptimes = instruction[1]
@@ -518,11 +538,16 @@ class CPU:
             self.__window_thread.start()
             while not self.__graphics_screen:
                 time.sleep(0.01)
+        elif op == "BINDCLICK":
+            t, l, w, h, func_name = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
+            self.__window_click_areas.append(
+                (t,l,w,h,func_name)
+            )
         elif op == "DEC":
             reg = instruction[1]
             self.__registers[reg] -= 1
         elif op == "ENDF":
-            self.__pc = self.__last_stop_line
+            self.__pc = self.__call_stack.pop()
         elif op.startswith(";"):
             pass
         elif op == "TOINT":
@@ -577,17 +602,21 @@ class CPU:
     def run(self):
         self.__running = True
         while self.__running:
-            if len(self.__pending_key_calls) != 0:
-                fn = self.__pending_key_calls.pop(0)
+            if self.__pending_graphical_calls:
+                fn = self.__pending_graphical_calls.pop(0)
                 self.execute(("CALL", fn))
+
             inst = self.fetch()
             if isinstance(inst, int):
                 break
+
             inst = inst.strip()
             if not inst:
                 continue
+
             inst = inst.split()
             self.execute(inst)
+
 
 cpu = CPU(mem_size=mem_size if mem_size else 256, regs=regs if regs else 200)
 with open(filename, "r") as f:
@@ -598,4 +627,4 @@ try:
 except KeyboardInterrupt:
     pass
 except Exception:
-    print(f"An error has occured on line {cpu.get_pc()-1}")
+    print(f"An error has occured on line {cpu.get_pc()}.")

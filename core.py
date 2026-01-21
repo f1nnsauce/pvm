@@ -237,6 +237,7 @@ class CPU:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.__graphics_running = False
+                    self.__running = False
                 elif event.type == pygame.KEYDOWN:
                     keycode = event.key
                     if keycode in self.__window_key_press_functions:
@@ -252,6 +253,7 @@ class CPU:
             pygame.display.flip()
             clock.tick(60)
         pygame.quit()
+        self.__running = False
         
     def load_program(self, program):
         """

@@ -86,6 +86,8 @@ PVM has registers instead of variables for storing data at runtime, and a global
     - WHITE
     - MAGENTA
     - BROWN
+    - GRAY
+    - DARK_GRAY
 - PIX [COLOR] [TOP] [LEFT]: Makes a pixel with the desired color and coordinates.
 - CIRC [X] [Y] [RADIUS] [COLOR]: Makes a circle at the desired coordinates with the desired radius and color.
 - RECT [TOP] [LEFT] [WIDTH] [HEIGHT] [COLOR]: Makes a rectangle at the desired coordinates with the desired size and color.

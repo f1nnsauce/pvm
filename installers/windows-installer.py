@@ -4,7 +4,7 @@ import os
 import sys
 import shutil
 
-URL = "https://raw.githubusercontent.com/f1nnsauce/pvm-bootstrapper/refs/heads/master/pvm-wrapper.py"
+URL = "https://raw.githubusercontent.com/f1nnsauce/pvm-bootstrapper/refs/heads/master/windows-pvm-wrapper.py"
 
 # Choose install location
 BIN_DIR = os.path.join(os.environ.get("LOCALAPPDATA", os.getcwd()), "pvm")

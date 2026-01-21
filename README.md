@@ -17,7 +17,7 @@ You can simply use an AUR helper to install pvm-git with commands like `yay -S p
 Download [/installers/general-unix-installer.py](/installers/general-unix-installer.py), use `chmod +x /PATH/TO/INSTALLER.py` and run it as sudo. The reason for the root privileges are because the installer adds a file to `/usr/local/bin/pvm`.
 
 ### Windows
-Download [/installers/windows-installer.py](/installers/windows-installer.py), make sure you have Python 3.x installed and in your PATH, and run it through the command line using `python /PATH/TO/INSTALLER.py`.
+Download [/installers/windows-installer.py](/installers/windows-installer.py), make sure you have Python 3.x installed and in your PATH, and run it through the command line using `python /PATH/TO/INSTALLER.py`. WARNING: THE WINDOWS VERSION HASN'T BEEN TESTED. PLEASE REPORT ANY BUGS FROM THE ISSUES PAGE ON THE PVM PAGE.
 
 ---
 

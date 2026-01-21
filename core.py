@@ -216,6 +216,7 @@ class CPU:
         }
         self.__sounds_playing = {}
         self.__window_key_press_functions = {}
+        self.__window_key_rel_functions = {}
         ssd_path = os.path.expanduser("~/.pvm/storage")
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
         self.__ssd = SSD(ssd_path)
@@ -240,6 +241,12 @@ class CPU:
                     if keycode in self.__window_key_press_functions:
                         self.__pending_key_calls.append(
                             self.__window_key_press_functions[keycode]
+                        )
+                elif event.type == pygame.KEYUP:
+                    keycode = event.key
+                    if keycode in self.__window_key_rel_functions:
+                        self.__pending_key_calls.append(
+                            self.__window_key_rel_functions[keycode]
                         )
             pygame.display.flip()
             clock.tick(60)
@@ -350,6 +357,13 @@ class CPU:
             func_name, key = instruction[1], instruction[2]
             keycode = pygame.key.key_code(key)
             self.__window_key_press_functions[keycode] = func_name
+        elif op == "BINDKEYREL":
+            if self.__graphics_running == False:
+                print("You cannot bind a key release without a graphical window!")
+                raise Exception
+            func_name, key = instruction[1], instruction[2]
+            keycode = pygame.key.key_code(key)
+            self.__window_key_rel_functions[keycode] = func_name
         elif op == "GETMEM":
             reg, key = instruction[1], instruction[2]
             self.__registers[reg] = self.__ssd.return_data(self.__memid, key)

@@ -437,7 +437,7 @@ class CPU:
             font_name, x, y, color, text = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
             if text.startswith('"') and instruction[-1].endswith('"'):
                 text = ' '.join(instruction[5:])
-            text.strip('"')
+            text = text[1:-1]
             if x.startswith("REG"):
                 x=self.__registers[x]
             if y.startswith("REG"):

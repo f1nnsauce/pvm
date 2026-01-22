@@ -69,8 +69,8 @@ PVM has registers instead of variables for storing data at runtime, and a global
     - == OPERATOR: Checks if the two registers are equal.
     - != OPERATOR: Checks if the two registers are not equal.
     - < OPERATOR: Checks if the value of register 1 is less than register 2.
-    - > OPERATOR: Checks if the value of register 1 is more than register 2.
-    - >= OPERATOR: Checks if the value of register 1 is more than or equal to register 2.
+    - \> OPERATOR: Checks if the value of register 1 is more than register 2.
+    - \>= OPERATOR: Checks if the value of register 1 is more than or equal to register 2.
     - <= OPERATOR: Checks if the value of register 1 is less than or equal to register 2.
     - STARTWITH OPERATOR: Checks if the value of register 1 starts with register 2.
     - ENDWITH OPERATOR: Checks if the value of register 1 ends with register 2.

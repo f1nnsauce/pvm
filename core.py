@@ -398,8 +398,21 @@ class CPU:
             self.__ssd.delete_key(self.__memid, key)
         elif op == "ADDMEM":
             data_title, data = instruction[1], instruction[2]
-            if instruction[2].startswith('"') and instruction[-1].endswith('"'):
-                data = ' '.join(instruction[2:])
+            if data.startswith("REG"):
+                data=self.__registers[data]
+            try:
+                data = int(data)
+            except ValueError:
+                try:
+                    data = float(data)
+                except ValueError:
+                    if instruction[2].startswith('"') and instruction[-1].endswith('"'):
+                        data = ' '.join(instruction[2:])
+                    else:
+                        print("Invalid data type")
+                        raise Exception
+            
+            
             self.__ssd.write_to(self.__memid, data_title, data)
         elif op == "MOV":
             reg1, reg2 = instruction[1], instruction[2]
@@ -541,7 +554,6 @@ class CPU:
         elif op == "ENDIF":
             pass
         elif op == "ELSE":
-            # Skip to ENDIF if we hit ELSE and the IF body was executed
             depth = 1
             while depth > 0:
                 instr = self.__memory[self.__pc]
@@ -594,6 +606,16 @@ class CPU:
             self.__window_thread.start()
             while not self.__graphics_screen:
                 time.sleep(0.01)
+        elif op == "GETMX":
+            reg = instruction[1]
+            if self.__graphics_running == False:
+                print("Must have a graphical window open for getting mouse coordinates!")
+            self.__registers[reg] = pygame.mouse.get_pos()[0]
+        elif op == "GETMY":
+            reg = instruction[1]
+            if self.__graphics_running == False:
+                print("Must have a graphical window open for getting mouse coordinates!")
+            self.__registers[reg] = pygame.mouse.get_pos()[1]
         elif op == "BINDCLICK":
             t, l, w, h, func_name = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
             if t.startswith("REG"):
@@ -618,9 +640,14 @@ class CPU:
         elif op == "TOINT":
             reg = instruction[1]
             try:
-                self.__registers[reg] = int(self.__registers[reg])
-            except:
-                print(f"ERROR ON TOINT AT PC {self.__pc}")
+                val = self.__registers[reg]
+                if val is None:
+                    val = 0
+                if isinstance(val, str):
+                    val = val.strip()
+                self.__registers[reg] = int(val)
+            except Exception:
+                print(f"ERROR ON TOINT AT PC {self.__pc} WITH VALUE {self.__registers[reg]}")
                 self.__running = False
                 raise Exception
         elif op == "TOSTR":

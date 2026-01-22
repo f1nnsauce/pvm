@@ -108,8 +108,10 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - BINDKEYREL [FUNCTION NAME] [KEY]: Binds a key release to a function. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - BINDCLICK [TOP] [LEFT] [WIDTH] [HEIGHT] [FUNCTION NAME]: Binds a function to a click in a specific region.
 - CLOCK [FPS]: Calculates the delta for a static FPS and delays execution for that amount of time.
-- CFONT [SIZE] [ITALIC] [CACHE NAME]: Caches a font object with the provided size and italic if TRUE. CACHE NAME is only the name that the font is cached for, not a font name.
-- DFONT [CACHE NAME] [TOP] [LEFT] [COLOR] [TEXT]: Draws a cached font with the coordinates, color and text provided. Text must be in double quotes.
+- CFONT [SIZE] [ITALIC] [CACHE NAME]: Caches a font object with the provided size and italic if TRUE. CACHE NAME is only the name that the font is cached for, not a font name. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- DFONT [CACHE NAME] [TOP] [LEFT] [COLOR] [TEXT]: Draws a cached font with the coordinates, color and text provided. Text must be in double quotes. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- GETMX [REGISTER]: Gets the X coordinate of the mouse and saves it to a register. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- GETMY [REGISTER]: Gets the Y coordinate of the mouse and saves it to a register. MUST HAVE A GRAPHICAL WINDOW OPEN.
 
 ### Example Snippet
 

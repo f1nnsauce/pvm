@@ -216,11 +216,13 @@ class CPU:
         self.__flags = {
             "TRUE": False
         }
+        self.__font_cache = {}
         self.__window_click_areas = []
         self.__sounds_playing = {}
         self.__window_key_press_functions = {}
         self.__window_key_rel_functions = {}
         self.__call_stack = []
+        self.__graphics_lock = threading.Lock()
         ssd_path = os.path.expanduser("~/.pvm/storage")
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
         self.__ssd = SSD(ssd_path)
@@ -266,8 +268,8 @@ class CPU:
                             self.__pending_graphical_calls.append(f)
                             del rect
                             continue
-
-            pygame.display.flip()
+            with self.__graphics_lock:
+                pygame.display.flip()
             clock.tick(60)
         pygame.quit()
         self.__running = False
@@ -363,7 +365,8 @@ class CPU:
             reg = instruction[1]
             self.__registers[reg] = 0
         elif op == "FILLGRA":
-            self.__graphics_screen.fill(self.__colors[instruction[1]])
+            with self.__graphics_lock:
+                self.__graphics_screen.fill(self.__colors[instruction[1]])
         elif op == "OUT":
             reg = instruction[1]
             print(self.__registers[reg])
@@ -418,7 +421,33 @@ class CPU:
             t = int(t)
             w = int(w)
             h = int(h)
-            pygame.draw.rect(self.__graphics_screen, self.__colors[c], pygame.Rect(l, t, w, h))
+            with self.__graphics_lock:
+                pygame.draw.rect(self.__graphics_screen, self.__colors[c], pygame.Rect(l, t, w, h))
+        elif op == "CFONT":
+            size, italic, name = instruction[1], instruction[2], instruction[3]
+            if size.startswith("REG"):
+                size = self.__registers[size]
+            size=int(size)
+            italic = {"TRUE": True, "FALSE": False}.get(italic.upper())
+            if italic is None:
+                print("Invalid italic value")
+                raise Exception
+            self.__font_cache[name] = pygame.font.SysFont("Monaco", size, False, italic)
+        elif op == "DFONT":
+            font_name, x, y, color, text = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
+            if text.startswith('"') and instruction[-1].endswith('"'):
+                text = ' '.join(instruction[5:])
+            text.strip('"')
+            if x.startswith("REG"):
+                x=self.__registers[x]
+            if y.startswith("REG"):
+                y=self.__registers[y]
+            y=int(y)
+            x=int(x)
+            font = self.__font_cache[font_name]
+            surface_f = font.render(text, False, self.__colors[color])
+            with self.__graphics_lock:
+                self.__graphics_screen.blit(surface_f, (y,x))
         elif op == "RANDI":
             reg,minn,maxn = instruction[1],instruction[2],instruction[3]
             self.__registers[reg] = random.randint(int(minn),int(maxn))
@@ -431,7 +460,8 @@ class CPU:
             if r.startswith("REG"):
                 r = self.__registers[r]
             c = self.__colors[c]
-            pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
+            with self.__graphics_lock:
+                pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
         elif op == "PIX":
             c, t, l = instruction[1], instruction[2], instruction[3]
             if t.startswith("REG"):
@@ -440,8 +470,9 @@ class CPU:
                 l = self.__registers[l]
             l = int(l)
             t = int(t)
-            pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
-        elif op == "CMP":
+            with self.__graphics_lock:
+                pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
+        elif op == "IF":
             reg1,oper,reg2 = instruction[1],instruction[2],instruction[3]
             reg1 = self.__registers[reg1]
             reg2 = self.__registers[reg2]
@@ -450,54 +481,79 @@ class CPU:
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == "!=":
+            elif oper == "!=":
                 if reg1 != reg2:
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == "<":
+            elif oper == "<":
                 if reg1 < reg2:
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == ">":
+            elif oper == ">":
                 if reg1 > reg2:
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == "<=":
+            elif oper == "<=":
                 if reg1 <= reg2:
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == ">=":
+            elif oper == ">=":
                 if reg1 >= reg2:
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == "STARTWITH":
+            elif oper == "STARTWITH":
                 if reg1.startswith(reg2):
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-            if oper == "ENDWITH":
+            elif oper == "ENDWITH":
                 if reg1.endswith(reg2):
                     self.__flags["TRUE"] = True
                 else:
                     self.__flags["TRUE"] = False
-        elif op == "IF":
-            if instruction[1] == "F":
-                if self.__flags["TRUE"] == False:
-                    cmd = ' '.join(instruction[2:])
-                    self.execute(cmd.strip().split())
-            elif instruction[1] == "T":
-                if self.__flags["TRUE"] == True:
-                    cmd = ' '.join(instruction[2:])
-                    self.execute(cmd.strip().split())
+            else:
+                print("INVALID OPERATOR.")
+                raise Exception
+            if self.__flags["TRUE"] == False:
+                depth = 1
+                while depth > 0:
+                    instr = self.__memory[self.__pc]
+                    self.__pc += 1
+                    if isinstance(instr, str):
+                        s = instr.strip()
+                        if s.startswith("IF "):
+                            depth += 1
+                        elif s.startswith("ENDIF"):
+                            depth -= 1
+                        elif s.startswith("ELSE"):
+                            break
+
+
         elif op == "CLOCK":
             t = instruction[1]
             d = 1 / int(t)
             time.sleep(d)
+        elif op == "ENDIF":
+            pass
+        elif op == "ELSE":
+            # Skip to ENDIF if we hit ELSE and the IF body was executed
+            depth = 1
+            while depth > 0:
+                instr = self.__memory[self.__pc]
+                self.__pc += 1
+                if isinstance(instr, str):
+                    s = instr.strip()
+                    if s.startswith("IF "):
+                        depth += 1
+                    elif s == "ENDIF":
+                        depth -= 1
+        elif op == "RET":
+            self.__pc = self.__call_stack.pop()
         elif op == "SWP":
             reg1, reg2 = instruction[1], instruction[2]
             self.__registers[reg1], self.__registers[reg2] = self.__registers[reg2], self.__registers[reg1]

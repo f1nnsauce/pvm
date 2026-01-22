@@ -65,16 +65,15 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - TOFLOAT [REGISTER NAME]: Attempts to turn the value in a register to a float.
 - REGDUMP: Dumps the values of all registers for debugging.
 - CUT [REGISTER NAME] [STARTING INDEX] [ENDING INDEX]: Cuts the string value in a register with desired indexes.
-- CMP [REGISTER 1] [OPERATOR] [REGISTER 2]: Compares the two registers with an operator and sets a flag.
-    -== OPERATOR: Checks if the two registers are equal.
-    -!= OPERATOR: Checks if the two registers are not equal.
-    -< OPERATOR: Checks if the value of register 1 is less than register 2.
-    -> OPERATOR: Checks if the value of register 1 is more than register 2.
-    ->= OPERATOR: Checks if the value of register 1 is more than or equal to register 2.
-    -<= OPERATOR: Checks if the value of register 1 is less than or equal to register 2.
-    -STARTWITH OPERATOR: Checks if the value of register 1 starts with register 2.
-    -ENDWITH OPERATOR: Checks if the value of register 1 ends with register 2.
-- IF [T/F] [COMMAND]: Works along with CMP, if argument 1 is T, it checks if the flag set by CMP is TRUE, and if it is, runs the command provided. F is the opposite.
+- IF [CONDITION]: Checks if the condition provided is true, and executes a block of code if it is. Block must end with ENDIF. ELSE is supported but must come before ENDIF. ELSEIF is not supported at the moment. Operators allowed are:
+    - == OPERATOR: Checks if the two registers are equal.
+    - != OPERATOR: Checks if the two registers are not equal.
+    - < OPERATOR: Checks if the value of register 1 is less than register 2.
+    - > OPERATOR: Checks if the value of register 1 is more than register 2.
+    - >= OPERATOR: Checks if the value of register 1 is more than or equal to register 2.
+    - <= OPERATOR: Checks if the value of register 1 is less than or equal to register 2.
+    - STARTWITH OPERATOR: Checks if the value of register 1 starts with register 2.
+    - ENDWITH OPERATOR: Checks if the value of register 1 ends with register 2.
 - GRA [WIDTH] [HEIGHT]: Opens a graphical window with the desired width and height. The window will close in case of the program ending, usually accompanied by a game loop.
 - FILLGRA [COLOR]: Fills the graphical window with a color. The available colors are:
     - RED
@@ -109,6 +108,8 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - BINDKEYREL [FUNCTION NAME] [KEY]: Binds a key release to a function. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - BINDCLICK [TOP] [LEFT] [WIDTH] [HEIGHT] [FUNCTION NAME]: Binds a function to a click in a specific region.
 - CLOCK [FPS]: Calculates the delta for a static FPS and delays execution for that amount of time.
+- CFONT [SIZE] [ITALIC] [CACHE NAME]: Caches a font object with the provided size and italic if TRUE. CACHE NAME is only the name that the font is cached for, not a font name.
+- DFONT [CACHE NAME] [TOP] [LEFT] [COLOR] [TEXT]: Draws a cached font with the coordinates, color and text provided. Text must be in double quotes.
 
 ### Example Snippet
 

@@ -92,7 +92,7 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - RECT [TOP] [LEFT] [WIDTH] [HEIGHT] [COLOR]: Makes a rectangle at the desired coordinates with the desired size and color.
 - DELAY [SECONDS]: Pauses the program for a certain amount of time, supports decimals.
 - LOADSOUND [PATH] [NAME]: Loads a sound from a path to memory with the desired name. MUST HAVE A GRAPHICAL WINDOW OPEN.
-- PLAYSOUND [NAME]: Plays a loaded sound. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- PLAYSOUND [NAME] [LOOPED?]: Plays a loaded sound and loops it forever if the second argument is TRUE. There MUST be a second argument, even if looping isn't intended, then it must be FALSE. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - STOPSOUND [NAME]: Stops a playing sound. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - REMSOUND [NAME]: Removes a sound from memory. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - LSSOUND: Lists all loaded sounds. MUST HAVE A GRAPHICAL WINDOW OPEN.

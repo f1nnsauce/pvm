@@ -278,7 +278,8 @@ class CPU:
                             self.__pending_graphical_calls.append(f)
                             del rect
                             continue
-            pygame.display.flip()
+            with self.__graphics_lock:
+                pygame.display.flip()
             clock.tick(60)
         pygame.quit()
         self.__running = False
@@ -336,7 +337,7 @@ class CPU:
             soundclass = pygame.mixer.Sound(sound)
             self.__sounds_playing[name] = soundclass
         elif op == "PLAYSOUND":
-            sound, name, islooped = instruction[1], instruction[2], instruction[3]
+            name, islooped = instruction[1], instruction[2]
             if not self.__graphics_running:
                 print("Can't play sounds without a graphical window!")
                 raise Exception
@@ -344,7 +345,7 @@ class CPU:
                 print(f"The sound {name} is not loaded!")
                 raise Exception
             soundclass = self.__sounds_playing[name]
-            loops = -1 if islooped == "TRUE" else 0
+            loops = -1 if islooped.upper() == "TRUE" else 0
             soundclass.play(loops=loops)
         elif op == "STOPSOUND":
             name = instruction[1]
@@ -374,7 +375,8 @@ class CPU:
             reg = instruction[1]
             self.__registers[reg] = 0
         elif op == "FILLGRA":
-            self.__graphics_screen.fill(self.__colors[instruction[1]])
+            with self.__graphics_lock:
+                self.__graphics_screen.fill(self.__colors[instruction[1]])
         elif op == "OUT":
             reg = instruction[1]
             print(self.__registers[reg])
@@ -442,7 +444,8 @@ class CPU:
             t = int(t)
             w = int(w)
             h = int(h)
-            pygame.draw.rect(self.__graphics_screen, self.__colors[c], pygame.Rect(l, t, w, h))
+            with self.__graphics_lock:
+                pygame.draw.rect(self.__graphics_screen, self.__colors[c], pygame.Rect(l, t, w, h))
         elif op == "CFONT":
             size, italic, name = instruction[1], instruction[2], instruction[3]
             if size.startswith("REG"):
@@ -479,7 +482,8 @@ class CPU:
             if r.startswith("REG"):
                 r = self.__registers[r]
             c = self.__colors[c]
-            pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
+            with self.__graphics_lock:
+                pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
         elif op == "PIX":
             c, t, l = instruction[1], instruction[2], instruction[3]
             if t.startswith("REG"):
@@ -488,7 +492,8 @@ class CPU:
                 l = self.__registers[l]
             l = int(l)
             t = int(t)
-            pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
+            with self.__graphics_lock:
+                pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
         elif op == "IF":
             reg1,oper,reg2 = instruction[1],instruction[2],instruction[3]
             reg1 = self.__registers[reg1]
@@ -675,14 +680,23 @@ class CPU:
             inst = inst.split()
             self.execute(inst)
 
+verbose = False
+if len(sys.argv) == 3 and sys.argv[2] == "--verbose":
+    verbose = True
 
 cpu = CPU(mem_size=mem_size if mem_size else 256, regs=regs if regs else 200)
 with open(filename, "r") as f:
     content = f.readlines()
 cpu.load_program(content)
-try:
-    cpu.run()
-except KeyboardInterrupt:
-    pass
-except Exception:
-    print(f"An error has occured on line {cpu.get_pc()}.")
+if not verbose:
+    try:
+        cpu.run()
+    except KeyboardInterrupt:
+        pass
+    except Exception:
+        print(f"An error has occured on line {cpu.get_pc()}. This might be a syntax error on your part or the core might be bugged. Check your syntax, if it is correct, report a bug with your source file for the PVM program and the --verbose output.")
+else:
+    try:
+        cpu.run()
+    except KeyboardInterrupt:
+        pass

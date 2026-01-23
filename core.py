@@ -278,8 +278,7 @@ class CPU:
                             self.__pending_graphical_calls.append(f)
                             del rect
                             continue
-            with self.__graphics_lock:
-                pygame.display.flip()
+            pygame.display.flip()
             clock.tick(60)
         pygame.quit()
         self.__running = False
@@ -375,8 +374,7 @@ class CPU:
             reg = instruction[1]
             self.__registers[reg] = 0
         elif op == "FILLGRA":
-            with self.__graphics_lock:
-                self.__graphics_screen.fill(self.__colors[instruction[1]])
+            self.__graphics_screen.fill(self.__colors[instruction[1]])
         elif op == "OUT":
             reg = instruction[1]
             print(self.__registers[reg])
@@ -444,8 +442,7 @@ class CPU:
             t = int(t)
             w = int(w)
             h = int(h)
-            with self.__graphics_lock:
-                pygame.draw.rect(self.__graphics_screen, self.__colors[c], pygame.Rect(l, t, w, h))
+            pygame.draw.rect(self.__graphics_screen, self.__colors[c], pygame.Rect(l, t, w, h))
         elif op == "CFONT":
             size, italic, name = instruction[1], instruction[2], instruction[3]
             if size.startswith("REG"):
@@ -469,8 +466,7 @@ class CPU:
             x=int(x)
             font = self.__font_cache[font_name]
             surface_f = font.render(text, False, self.__colors[color])
-            with self.__graphics_lock:
-                self.__graphics_screen.blit(surface_f, (y,x))
+            self.__graphics_screen.blit(surface_f, (y,x))
         elif op == "RANDI":
             reg,minn,maxn = instruction[1],instruction[2],instruction[3]
             self.__registers[reg] = random.randint(int(minn),int(maxn))
@@ -483,8 +479,7 @@ class CPU:
             if r.startswith("REG"):
                 r = self.__registers[r]
             c = self.__colors[c]
-            with self.__graphics_lock:
-                pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
+            pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
         elif op == "PIX":
             c, t, l = instruction[1], instruction[2], instruction[3]
             if t.startswith("REG"):
@@ -493,8 +488,7 @@ class CPU:
                 l = self.__registers[l]
             l = int(l)
             t = int(t)
-            with self.__graphics_lock:
-                pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
+            pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
         elif op == "IF":
             reg1,oper,reg2 = instruction[1],instruction[2],instruction[3]
             reg1 = self.__registers[reg1]

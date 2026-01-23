@@ -247,6 +247,7 @@ class CPU:
     def start_window(self,h,w):
         self.__graphics_running = True
         self.__graphics_screen = pygame.display.set_mode((w,h))
+        pygame.display.set_caption("PVM GRAPHICAL WINDOW")
         clock = pygame.time.Clock()
         while self.__graphics_running:
             for event in pygame.event.get():
@@ -571,6 +572,12 @@ class CPU:
         elif op == "INC":
             reg = instruction[1]
             self.__registers[reg] += 1
+        elif op == "GRATITLE":
+            title = instruction[1]
+            if title.startswith('"') and instruction[-1].endswith('"'):
+                title = ' '.join(instruction[1:])
+                title = title[1:-1]
+            pygame.display.set_caption(title)
         elif op == "GRA":
             w,h = int(instruction[1]),int(instruction[2])
             self.__window_thread = threading.Thread(target=self.start_window, args=(h,w))

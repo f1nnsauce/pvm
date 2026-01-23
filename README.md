@@ -75,6 +75,7 @@ PVM has registers instead of variables for storing data at runtime, and a global
     - STARTWITH OPERATOR: Checks if the value of register 1 starts with register 2.
     - ENDWITH OPERATOR: Checks if the value of register 1 ends with register 2.
 - GRA [WIDTH] [HEIGHT]: Opens a graphical window with the desired width and height. The window will close in case of the program ending, usually accompanied by a game loop.
+- GRATITLE [TITLE]: Changes the title of the graphical window that's open.
 - FILLGRA [COLOR]: Fills the graphical window with a color. The available colors are:
     - RED
     - BLUE

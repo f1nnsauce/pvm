@@ -223,6 +223,16 @@ class CPU:
         self.__window_key_rel_functions = {}
         self.__call_stack = []
         self.__graphics_lock = threading.Lock()
+        self.__operators = {
+            "==": lambda a, b: a==b,
+            "!=": lambda a, b: a!=b,
+            ">": lambda a, b: a>b,
+            "<": lambda a, b: a<b,
+            "<=": lambda a, b: a<=b,
+            ">=": lambda a, b: a>=b,
+            "STARTWITH": lambda a, b: a.startswith(b),
+            "ENDWITH": lambda a, b: a.endswith(b),
+        }
         ssd_path = os.path.expanduser("~/.pvm/storage")
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
         self.__ssd = SSD(ssd_path)
@@ -489,48 +499,10 @@ class CPU:
             reg1,oper,reg2 = instruction[1],instruction[2],instruction[3]
             reg1 = self.__registers[reg1]
             reg2 = self.__registers[reg2]
-            if oper == "==":
-                if reg1 == reg2:
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == "!=":
-                if reg1 != reg2:
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == "<":
-                if reg1 < reg2:
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == ">":
-                if reg1 > reg2:
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == "<=":
-                if reg1 <= reg2:
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == ">=":
-                if reg1 >= reg2:
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == "STARTWITH":
-                if reg1.startswith(reg2):
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            elif oper == "ENDWITH":
-                if reg1.endswith(reg2):
-                    self.__flags["TRUE"] = True
-                else:
-                    self.__flags["TRUE"] = False
-            else:
-                print("INVALID OPERATOR.")
+            try:
+                self.__flags["TRUE"] = self.__operators[oper](reg1,reg2)
+            except KeyError:
+                print("Invalid operator")
                 raise Exception
             if self.__flags["TRUE"] == False:
                 depth = 1

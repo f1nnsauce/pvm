@@ -50,10 +50,10 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - IN [REGISTER NAME] [QUESTION (optional, add `""` for nothing)]: Asks the user for blocking input, and stores the answer in a register.
 - CLR [REGISTER NAME]: Resets the value of a register to 0, basically a shorter way of doing `LOAD [REGISTER] 0`.
 - SWP [REGISTER 1] [REGISTER 2]: Swaps the values of two registers.
-- SUM [REGISTER 1] [REGISTER 2]: Adds the values of [REGISTER 1] and [REGISTER 2] and stores the result in [REGISTER 1]
-- SUB [REGISTER 1] [REGISTER 2]: Subtracts the values of [REGISTER 1] and [REGISTER 2] and stores the result in [REGISTER 1]
-- DIV [REGISTER 1] [REGISTER 2]: Divides the values of [REGISTER 1] and [REGISTER 2] and stores the result in [REGISTER 1]
-- MULT [REGISTER 1] [REGISTER 2]: Multiplies the values of [REGISTER 1] and [REGISTER 2] and stores the result in [REGISTER 1]
+- SUM [NUMBER 1] [NUMBER 2] [REGISTER]: Adds the values of [NUMBER 1] and [NUMBER 2] and stores the result in [REGISTER].
+- SUB [REGISTER 1] [REGISTER 2] [REGISTER]: Subtracts the values of [NUMBER 1] and [NUMBER 2] and stores the result in [REGISTER].
+- DIV [REGISTER 1] [REGISTER 2] [REGISTER]: Divides the values of [NUMBER 1] and [NUMBER 2] and stores the result in [REGISTER].
+- MULT [REGISTER 1] [REGISTER 2] [REGISTER]: Multiplies the values of [NUMBER 1] and [NUMBER 2] and stores the result in [REGISTER].
 - TM [REGISTER NAME]: Stores the current time passed since the Unix Epoch in a register. Good for cooldown mechanisms!
 - LOOP [N]: Begins a loop that runs N times. The end of the looped section must end with ENDL.
 - $[FUNCTION NAME]: Begins the declaration of a function. The end of the function body must end with ENDF.

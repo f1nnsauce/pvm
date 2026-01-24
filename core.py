@@ -317,17 +317,49 @@ class CPU:
                         self.__running = False
             self.__registers[reg] = val
         elif op == "SUM":
-            reg1,reg2 = instruction[1], instruction[2]
-            self.__registers[reg1] += self.__registers[reg2]
+            num1,num2,reg = instruction[1], instruction[2], instruction[3]
+            if num1.startswith("REG"):
+                num1 = self.__registers[num1]
+            else:
+                num1 = int(num1)
+            if num2.startswith("REG"):
+                num2 = self.__registers[num2]
+            else:
+                num2 = int(num2)
+            self.__registers[reg] = num1+num2
         elif op == "SUB":
-            reg1,reg2 = instruction[1], instruction[2]
-            self.__registers[reg1] -= self.__registers[reg2]
+            num1,num2,reg = instruction[1], instruction[2], instruction[3]
+            if num1.startswith("REG"):
+                num1 = self.__registers[num1]
+            else:
+                num1 = int(num1)
+            if num2.startswith("REG"):
+                num2 = self.__registers[num2]
+            else:
+                num2 = int(num2)
+            self.__registers[reg] = num1-num2
         elif op == "MULT":
-            reg1,reg2 = instruction[1], instruction[2]
-            self.__registers[reg1] *= self.__registers[reg2]
+            num1,num2,reg = instruction[1], instruction[2], instruction[3]
+            if num1.startswith("REG"):
+                num1 = self.__registers[num1]
+            else:
+                num1 = int(num1)
+            if num2.startswith("REG"):
+                num2 = self.__registers[num2]
+            else:
+                num2 = int(num2)
+            self.__registers[reg] = num1*num2
         elif op == "DIV":
-            reg1,reg2 = instruction[1], instruction[2]
-            self.__registers[reg1] /= self.__registers[reg2]
+            num1,num2,reg = instruction[1], instruction[2], instruction[3]
+            if num1.startswith("REG"):
+                num1 = self.__registers[num1]
+            else:
+                num1 = int(num1)
+            if num2.startswith("REG"):
+                num2 = self.__registers[num2]
+            else:
+                num2 = int(num2)
+            self.__registers[reg] = num1/num2
         elif op == "TM":
             reg = instruction[1]
             self.__registers[reg] = time.time()

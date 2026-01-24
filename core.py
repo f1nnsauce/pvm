@@ -218,7 +218,7 @@ class CPU:
         }
         self.__font_cache = {}
         self.__window_click_areas = []
-        self.__sounds_playing = {}
+        self.__loaded_sounds = {}
         self.__window_key_press_functions = {}
         self.__window_key_rel_functions = {}
         self.__call_stack = []
@@ -369,16 +369,16 @@ class CPU:
                 print("Cannot load sounds without a graphical window!")
                 raise Exception
             soundclass = pygame.mixer.Sound(sound)
-            self.__sounds_playing[name] = soundclass
+            self.__loaded_sounds[name] = soundclass
         elif op == "PLAYSOUND":
             name, islooped = instruction[1], instruction[2]
             if not self.__graphics_running:
                 print("Can't play sounds without a graphical window!")
                 raise Exception
-            if not name in self.__sounds_playing:
+            if not name in self.__loaded_sounds:
                 print(f"The sound {name} is not loaded!")
                 raise Exception
-            soundclass = self.__sounds_playing[name]
+            soundclass = self.__loaded_sounds[name]
             loops = -1 if islooped.upper() == "TRUE" else 0
             soundclass.play(loops=loops)
         elif op == "STOPSOUND":
@@ -386,22 +386,22 @@ class CPU:
             if not self.__graphics_running:
                 print("There isn't any graphical window running to play sounds from!")
                 raise Exception
-            if not name in self.__sounds_playing:
+            if not name in self.__loaded_sounds:
                 print(f"The sound {name} isn't loaded!")
                 raise Exception
-            self.__sounds_playing[name].stop()
+            self.__loaded_sounds[name].stop()
         elif op == "REMSOUND":
             name = instruction[1]
             if not self.__graphics_running:
                 print("There's no graphical window to remove sounds from.")
                 raise Exception
-            if not name in self.__sounds_playing:
+            if not name in self.__loaded_sounds:
                 print("This sound isn't even loaded!")
                 raise Exception
-            self.__sounds_playing[name] = None
+            self.__loaded_sounds[name] = None
         elif op == "LSSOUND":
             reg = instruction[1]
-            self.__registers[reg] = len(self.__sounds_playing)
+            self.__registers[reg] = len(self.__loaded_sounds)
         elif op == "IN":
             reg,q = instruction[1], ' '.join(instruction[2:]).strip('"')
             self.__registers[reg] = input(q)

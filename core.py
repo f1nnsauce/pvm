@@ -222,6 +222,7 @@ class CPU:
         self.__window_key_press_functions = {}
         self.__window_key_rel_functions = {}
         self.__call_stack = []
+        self.__loaded_images = {}
         self.__graphics_lock = threading.Lock()
         self.__operators = {
             "==": lambda a, b: a==b,
@@ -594,6 +595,24 @@ class CPU:
             if self.__graphics_running == False:
                 print("Must have a graphical window open for getting mouse coordinates!")
             self.__registers[reg] = pygame.mouse.get_pos()[1]
+        elif op == "SPRITELOAD":
+            path, name = instruction[1], instruction[2]
+            img = pygame.image.load(path)
+            self.__loaded_images[name] = img
+        elif op == "DSPRITE":
+            name, top, left = instruction[1], instruction[2], instruction[3]
+            if top.startswith("REG"):
+                top = self.__registers[top]
+            if left.startswith("REG"):
+                left = self.__registers[left]
+            top=int(top)
+            left=int(left)
+            if not self.__graphics_running:
+                print("You cannot draw sprites without a graphical window!")
+                raise Exception
+            img = self.__loaded_images[name]
+            with self.__graphics_lock:
+                self.__graphics_screen.blit(img, (left,top))
         elif op == "BINDCLICK":
             t, l, w, h, func_name = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
             if t.startswith("REG"):

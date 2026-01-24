@@ -114,6 +114,8 @@ PVM has registers instead of variables for storing data at runtime, and a global
 - GETMX [REGISTER]: Gets the X coordinate of the mouse and saves it to a register. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - GETMY [REGISTER]: Gets the Y coordinate of the mouse and saves it to a register. MUST HAVE A GRAPHICAL WINDOW OPEN.
 - RET: Returns early from a function call. Can ONLY be used in a function.
+- LOADSPRITE [PATH] [NAME]: Loads a sprite into memory. Path can be relative or absolute.
+- DSPRITE [NAME] [TOP] [LEFT]: Draws a sprite at the given coordinates. MUST HAVE A GRAPHICAL WINDOW OPEN.
 
 ### Example Snippet
 

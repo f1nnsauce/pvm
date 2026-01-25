@@ -718,6 +718,7 @@ class CPU:
             raise Exception
     
     def get_pc(self):
+        """Get the Program Counter value."""
         return self.__pc
 
     def run(self):

@@ -41,6 +41,8 @@ PVM is an extremely easy language to learn. While I don't recommend it to get in
 ### Basic Concepts
 
 PVM has registers instead of variables for storing data at runtime, and a global storage file with a maximum space of 1 GB. By default, there are 200 registers, going from `REG1` to `REG200`. All of these registers start out at the integer 0 (zero).
+<br>
+There's also limited amount of memory to store instructions in. This defaults to 256, meaning a program normally can't have more than 256 lines of code, which does not include comments and empty lines. You can change this by adding the "--mem-size" optional argument when running the PVM loader and adding a number after it.
 
 ### Commands
 

@@ -296,6 +296,10 @@ class CPU:
             print("NOT ENOUGH MEMORY FOR PROGRAM.")
             return
         for i, instruction in enumerate(program):
+            if not instruction.strip():
+                continue
+            if instruction.startswith(";"):
+                continue
             self.__memory[i] = instruction
         self.__pc = 0
     

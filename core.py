@@ -15,7 +15,7 @@ import pygame
 
 sys.stderr = real_stderr
 if len(sys.argv) < 2:
-    print("usage: pvm <file>.pvm (OPTIONAL FLAG)")
+    print("usage: pvm <file>.pvm (OPTIONAL FLAGS)")
     sys.exit(1)
 
 mem_size = None

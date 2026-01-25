@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-import time, random, threading, os, sys
+import time, random, threading, os, sys, requests
 from pathlib import Path
+from urllib.request import urlopen
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["PYGAME_DETECT_AVX2"] = "1"
 
@@ -412,6 +413,24 @@ class CPU:
         elif op == "CLR":
             reg = instruction[1]
             self.__registers[reg] = 0
+        elif op == "READSITE":
+            site, reg = instruction[1], instruction[2]
+            print(f"[NETWORK]: READSITE on line {self.get_pc()} to website {site}.")
+            with urlopen(url=site) as res:
+                self.__registers[reg] = res.read().decode("utf-8")
+        elif op == "POSTWEB":
+            site = instruction[1]
+            data = instruction[2:]
+            body = {}
+            print(f"[NETWORK]: POSTWEB on line {self.get_pc()} to website {site}")
+            for v in data:
+                full = v.split("=")
+                key = full[0]
+                value = full[1]
+                if value.startswith("REG"):
+                    value = self.__registers[value]
+                body[key] = value
+            
         elif op == "FILLGRA":
             with self.__graphics_lock:
                 self.__graphics_screen.fill(self.__colors[instruction[1]])
@@ -747,10 +766,18 @@ verbose = False
 if len(sys.argv) == 3 and sys.argv[2] == "--verbose":
     verbose = True
 
-cpu = CPU(mem_size=mem_size if mem_size else 256, regs=regs if regs else 200)
 with open(filename, "r") as f:
     content = f.readlines()
+
+if any("POSTWEB" in line or "READSITE" in line for line in content):
+    proceed = input("[WARNING]: This program uses the READSITE and POSTWEB opcodes. This may be harmless but it also could be used to log your sensitive information to unknown websites. Do you wish to proceed? (y/N): ")
+    if proceed.lower().strip() != "y":
+        print("Aborting execution.")
+        sys.exit(0)
+
+cpu = CPU(mem_size=mem_size if mem_size else 256, regs=regs if regs else 200)
 cpu.load_program(content)
+
 if not verbose:
     try:
         cpu.run()

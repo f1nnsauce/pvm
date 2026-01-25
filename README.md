@@ -118,6 +118,8 @@ There's also limited amount of memory to store instructions in. This defaults to
 - RET: Returns early from a function call. Can ONLY be used in a function.
 - LOADSPRITE [PATH] [NAME]: Loads a sprite into memory. Path can be relative or absolute.
 - DSPRITE [NAME] [TOP] [LEFT]: Draws a sprite at the given coordinates. MUST HAVE A GRAPHICAL WINDOW OPEN.
+- POSTWEB [SITE URL] [DATA IN KEY=VALUE FORMAT, CAN BE AS LONG AS YOU WANT]: Sends a POST request to the website specified with the given data parsed into JSON.
+- READSITE [SITE URL] [REGISTER]: Reads data from a website and saves the UTF-8 decoded result into a register.
 
 ### Example Snippet
 

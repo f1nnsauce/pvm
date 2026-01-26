@@ -755,6 +755,7 @@ class CPU:
 
             inst = self.fetch()
             if isinstance(inst, int):
+                print("EMPTY INSTRUCTION DATA")
                 break
 
             inst = inst.strip()

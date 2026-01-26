@@ -430,7 +430,7 @@ class CPU:
                 if value.startswith("REG"):
                     value = self.__registers[value]
                 body[key] = value
-            
+            requests.post(site, json=body)
         elif op == "FILLGRA":
             with self.__graphics_lock:
                 self.__graphics_screen.fill(self.__colors[instruction[1]])

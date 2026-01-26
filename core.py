@@ -370,6 +370,8 @@ class CPU:
         elif op == "TM":
             reg = instruction[1]
             self.__registers[reg] = time.time()
+        elif op == "DUMPMEM":
+            print(self.__memory)
         elif op == "LOADSOUND":
             sound, name = instruction[1], instruction[2]
             if not self.__graphics_running:
@@ -768,6 +770,7 @@ class CPU:
                 break
 
             inst = inst.strip()
+            inst = inst.rstrip("\n")
             if not inst:
                 continue
 

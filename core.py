@@ -414,11 +414,13 @@ class CPU:
             reg = instruction[1]
             self.__registers[reg] = 0
         elif op == "READSITE":
+            if no_network: return
             site, reg = instruction[1], instruction[2]
             print(f"[NETWORK]: READSITE on line {self.get_pc()} to website {site}.")
             with urlopen(url=site) as res:
                 self.__registers[reg] = res.read().decode("utf-8")
         elif op == "POSTWEB":
+            if no_network: return
             site = instruction[1]
             data = instruction[2:]
             body = {}
@@ -765,6 +767,10 @@ class CPU:
 verbose = False
 if len(sys.argv) == 3 and sys.argv[2] == "--verbose":
     verbose = True
+
+no_network = False
+if "--no-network" in sys.argv:
+    no_network = True
 
 with open(filename, "r") as f:
     content = f.readlines()

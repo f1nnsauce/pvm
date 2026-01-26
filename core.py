@@ -306,6 +306,12 @@ class CPU:
             self.__memory[i] = instruction
         self.__pc = 0
     
+    def is_referencing_register(self, variable):
+        if variable.startswith("REG"):
+            return self.__registers[variable]
+        else:
+            return variable
+    
     def execute(self, instruction):
         op = instruction[0]
         if op == "LOAD":
@@ -325,47 +331,31 @@ class CPU:
             self.__registers[reg] = val
         elif op == "SUM":
             num1,num2,reg = instruction[1], instruction[2], instruction[3]
-            if num1.startswith("REG"):
-                num1 = self.__registers[num1]
-            else:
-                num1 = int(num1)
-            if num2.startswith("REG"):
-                num2 = self.__registers[num2]
-            else:
-                num2 = int(num2)
+            num1 = self.is_referencing_register(num1)
+            num2 = self.is_referencing_register(num2)
+            num1 = int(num1)
+            num2 = int(num2)
             self.__registers[reg] = num1+num2
         elif op == "SUB":
             num1,num2,reg = instruction[1], instruction[2], instruction[3]
-            if num1.startswith("REG"):
-                num1 = self.__registers[num1]
-            else:
-                num1 = int(num1)
-            if num2.startswith("REG"):
-                num2 = self.__registers[num2]
-            else:
-                num2 = int(num2)
+            num1 = self.is_referencing_register(num1)
+            num2 = self.is_referencing_register(num2)
+            num1 = int(num1)
+            num2 = int(num2)
             self.__registers[reg] = num1-num2
         elif op == "MULT":
             num1,num2,reg = instruction[1], instruction[2], instruction[3]
-            if num1.startswith("REG"):
-                num1 = self.__registers[num1]
-            else:
-                num1 = int(num1)
-            if num2.startswith("REG"):
-                num2 = self.__registers[num2]
-            else:
-                num2 = int(num2)
+            num1 = self.is_referencing_register(num1)
+            num2 = self.is_referencing_register(num2)
+            num1 = int(num1)
+            num2 = int(num2)
             self.__registers[reg] = num1*num2
         elif op == "DIV":
             num1,num2,reg = instruction[1], instruction[2], instruction[3]
-            if num1.startswith("REG"):
-                num1 = self.__registers[num1]
-            else:
-                num1 = int(num1)
-            if num2.startswith("REG"):
-                num2 = self.__registers[num2]
-            else:
-                num2 = int(num2)
+            num1 = self.is_referencing_register(num1)
+            num2 = self.is_referencing_register(num2)
+            num1 = int(num1)
+            num2 = int(num2)
             self.__registers[reg] = num1/num2
         elif op == "TM":
             reg = instruction[1]
@@ -436,8 +426,7 @@ class CPU:
                 full = v.split("=")
                 key = full[0]
                 value = full[1]
-                if value.startswith("REG"):
-                    value = self.__registers[value]
+                value = self.is_referencing_register(value)
                 body[key] = value
             print(f"[NETWORK]: POSTWEB on line {self.get_pc()} to website {site} with JSON body {body}")
             try:
@@ -478,8 +467,7 @@ class CPU:
             self.__ssd.delete_key(self.__memid, key)
         elif op == "ADDMEM":
             data_title, data = instruction[1], instruction[2]
-            if data.startswith("REG"):
-                data=self.__registers[data]
+            data = self.is_referencing_register(data)
             try:
                 data = int(data)
             except ValueError:
@@ -502,14 +490,10 @@ class CPU:
             time.sleep(delay)
         elif op == "RECT":
             l, t, w, h, c = instruction[2], instruction[1], instruction[3], instruction[4], instruction[5]
-            if l.startswith("REG"):
-                l = self.__registers[l]
-            if t.startswith("REG"):
-                t = self.__registers[t]
-            if w.startswith("REG"):
-                w = self.__registers[w]
-            if h.startswith("REG"):
-                h = self.__registers[h]
+            l = self.is_referencing_register(l)
+            t = self.is_referencing_register(t)
+            h = self.is_referencing_register(h)
+            w = self.is_referencing_register(w)
             l = int(l)
             t = int(t)
             w = int(w)
@@ -531,10 +515,8 @@ class CPU:
             if text.startswith('"') and instruction[-1].endswith('"'):
                 text = ' '.join(instruction[5:])
             text = text[1:-1]
-            if x.startswith("REG"):
-                x=self.__registers[x]
-            if y.startswith("REG"):
-                y=self.__registers[y]
+            x = self.is_referencing_register(x)
+            y = self.is_referencing_register(y)
             y=int(y)
             x=int(x)
             font = self.__font_cache[font_name]
@@ -545,25 +527,37 @@ class CPU:
             self.__registers[reg] = random.randint(int(minn),int(maxn))
         elif op == "CIRC":
             x, y, r, c = instruction[1], instruction[2], instruction[3], instruction[4]
-            if x.startswith("REG"):
-                x = self.__registers[x]
-            if y.startswith("REG"):
-                y = self.__registers[y]
-            if r.startswith("REG"):
-                r = self.__registers[r]
+            x = self.is_referencing_register(x)
+            y = self.is_referencing_register(y)
+            r = self.is_referencing_register(r)
+            r = int(r)
+            x = int(x)
+            y = int(y)
             c = self.__colors[c]
             with self.__graphics_lock:
                 pygame.draw.circle(self.__graphics_screen, c, (x,y), r)
         elif op == "PIX":
             c, t, l = instruction[1], instruction[2], instruction[3]
-            if t.startswith("REG"):
-                t = self.__registers[t]
-            if l.startswith("REG"):
-                l = self.__registers[l]
+            t = self.is_referencing_register(t)
+            l = self.is_referencing_register(l)
             l = int(l)
             t = int(t)
             with self.__graphics_lock:
                 pygame.draw.circle(self.__graphics_screen, self.__colors[c], (l,t), 2)
+        elif op == "LINE":
+            color,top1,left1,top2,left2 = instruction[1],instruction[2],instruction[3],instruction[4],instruction[5]
+            color = self.__colors[color]
+            top1 = self.is_referencing_register(top1)
+            left1 = self.is_referencing_register(left1)
+            top2 = self.is_referencing_register(top2)
+            left2 = self.is_referencing_register(left2)
+            top1 = int(top1)
+            left1 = int(left1)
+            top2 = int(top2)
+            left2 = int(left2)
+
+            with self.__graphics_lock:
+                pygame.draw.aaline(self.__graphics_screen, color, (left1,top1), (left2,top2))
         elif op == "IF":
             reg1,oper,reg2 = instruction[1],instruction[2],instruction[3]
             reg1 = self.__registers[reg1]
@@ -669,10 +663,8 @@ class CPU:
             self.__loaded_images[name] = img
         elif op == "DSPRITE":
             name, top, left = instruction[1], instruction[2], instruction[3]
-            if top.startswith("REG"):
-                top = self.__registers[top]
-            if left.startswith("REG"):
-                left = self.__registers[left]
+            top = self.is_referencing_register(top)
+            left = self.is_referencing_register(left)
             top=int(top)
             left=int(left)
             if not self.__graphics_running:
@@ -683,14 +675,10 @@ class CPU:
                 self.__graphics_screen.blit(img, (left,top))
         elif op == "BINDCLICK":
             t, l, w, h, func_name = instruction[1], instruction[2], instruction[3], instruction[4], instruction[5]
-            if t.startswith("REG"):
-                t=self.__registers[t]
-            if l.startswith("REG"):
-                l=self.__registers[l]
-            if w.startswith("REG"):
-                w=self.__registers[w]
-            if h.startswith("REG"):
-                h=self.__registers[h]
+            l = self.is_referencing_register(l)
+            t = self.is_referencing_register(t)
+            h = self.is_referencing_register(h)
+            w = self.is_referencing_register(w)
             
             self.__window_click_areas.append(
                 (t,l,w,h,func_name)
@@ -737,10 +725,8 @@ class CPU:
         elif op == "CUT":
             reg = instruction[1]
             start, end = instruction[2], instruction[3]
-            if start.startswith("REG"):
-                start = self.__registers[start]
-            if end.startswith("REG"):
-                end = self.__registers[end]
+            start = self.is_referencing_register(start)
+            end = self.is_referencing_register(end)
             self.__registers[reg] = self.__registers[reg][start:end]
         elif op == "HLT":
             self.__graphics_running = False

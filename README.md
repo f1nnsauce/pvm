@@ -92,6 +92,7 @@ There's also limited amount of memory to store instructions in. This defaults to
     - DARK_GRAY
 - PIX [COLOR] [TOP] [LEFT]: Makes a pixel with the desired color and coordinates.
 - CIRC [X] [Y] [RADIUS] [COLOR]: Makes a circle at the desired coordinates with the desired radius and color.
+- LINE [COLOR] [X1] [Y1] [X2] [Y2]: Makes a line from point A at (X1,Y1) to point B at (X2,Y2) with the specific color.
 - RECT [TOP] [LEFT] [WIDTH] [HEIGHT] [COLOR]: Makes a rectangle at the desired coordinates with the desired size and color.
 - DELAY [SECONDS]: Pauses the program for a certain amount of time, supports decimals.
 - LOADSOUND [PATH] [NAME]: Loads a sound from a path to memory with the desired name. MUST HAVE A GRAPHICAL WINDOW OPEN.

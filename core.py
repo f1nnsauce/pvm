@@ -419,14 +419,17 @@ class CPU:
             if no_network: return
             site, reg = instruction[1], instruction[2]
             print(f"[NETWORK]: READSITE on line {self.get_pc()} to website {site}.")
-            with urlopen(url=site, timeout=5) as res:
-                self.__registers[reg] = res.read().decode("utf-8")
+            try:
+                with urlopen(url=site, timeout=5) as res:
+                    self.__registers[reg] = res.read().decode("utf-8")
+            except:
+                print("[NETWORK]: ERROR, please check your connection. Halting execution.")
+                self.execute(("HLT"))
         elif op == "POSTWEB":
             if no_network: return
             site = instruction[1]
             data = instruction[2:]
             body = {}
-            print(f"[NETWORK]: POSTWEB on line {self.get_pc()} to website {site}")
             for v in data:
                 full = v.split("=")
                 key = full[0]
@@ -434,7 +437,12 @@ class CPU:
                 if value.startswith("REG"):
                     value = self.__registers[value]
                 body[key] = value
-            self.__session.post(site, json=body, timeout=5)
+            print(f"[NETWORK]: POSTWEB on line {self.get_pc()} to website {site} with JSON body {body}")
+            try:
+                self.__session.post(site, json=body, timeout=5)
+            except:
+                print("[NETWORK]: ERROR, Please check your connection. Halting execution.")
+                self.execute(("HLT"))
         elif op == "FILLGRA":
             with self.__graphics_lock:
                 self.__graphics_screen.fill(self.__colors[instruction[1]])
@@ -462,7 +470,6 @@ class CPU:
             reg, key = instruction[1], instruction[2]
             self.__registers[reg] = self.__ssd.return_data(self.__memid, key)
         elif op == "DELSAVE":
-            key = instruction[1]
             self.__ssd.wipe_section(self.__memid)
         elif op == "DELMEM":
             key = instruction[1]

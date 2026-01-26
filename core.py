@@ -239,6 +239,8 @@ class CPU:
         os.makedirs(os.path.dirname(ssd_path), exist_ok=True)
         self.__ssd = SSD(ssd_path)
         self.__pending_graphical_calls = []
+        if not "--no-network" in sys.argv:
+            self.__session = requests.Session()
         self.__memid = ""
 
     def fetch(self):
@@ -417,7 +419,7 @@ class CPU:
             if no_network: return
             site, reg = instruction[1], instruction[2]
             print(f"[NETWORK]: READSITE on line {self.get_pc()} to website {site}.")
-            with urlopen(url=site) as res:
+            with urlopen(url=site, timeout=5) as res:
                 self.__registers[reg] = res.read().decode("utf-8")
         elif op == "POSTWEB":
             if no_network: return
@@ -432,7 +434,7 @@ class CPU:
                 if value.startswith("REG"):
                     value = self.__registers[value]
                 body[key] = value
-            requests.post(site, json=body)
+            self.__session.post(site, json=body, timeout=5)
         elif op == "FILLGRA":
             with self.__graphics_lock:
                 self.__graphics_screen.fill(self.__colors[instruction[1]])
